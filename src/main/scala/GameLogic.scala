@@ -20,7 +20,7 @@ case class GameLogic() {
 
   def computerChoice(): Unit = {
     val r = scala.util.Random
-    variables.computerInput = r.nextInt(3)+1
+    variables.computerInput = r.nextInt(3) + 1
   }
 
   def playerOption(input: String): Unit = {
@@ -46,7 +46,7 @@ case class GameLogic() {
     if (variables.playerInput == variables.computerInput){
       println("Draw! You both chose " + getOptionOfValue(variables.playerInput))
     }
-    else if (variables.playerInput % 3 > variables.computerInput){
+    else if (variables.playerInput % 3 > variables.computerInput % 3){
       println("You win :) Your choice: " +
         getOptionOfValue(variables.playerInput) +
         ", Computer: " +
