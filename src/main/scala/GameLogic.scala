@@ -1,10 +1,9 @@
 case class GameLogic() {
-  var variables: GameVariables = _
+  val variables : GameVariables = GameVariables.apply()
 
-  def startGame(gameVariables: GameVariables): Unit = {
-    variables = gameVariables
+  def startGame(): Unit = {
     println("Welcome to Rock Paper Scissors!\n")
-    makeChoices()
+    playerChoice()
   }
 
   def makeChoices(): Unit = {
@@ -14,23 +13,30 @@ case class GameLogic() {
   }
 
   def playerChoice(): Unit = {
-    val input = scala.io.StdIn.readLine("Choose 'Rock', 'Paper' or 'Scissors\n").capitalize
+    val input = scala.io.StdIn.readLine("Choose 'Rock', 'Paper' or 'Scissors. Type Exit to quit\n").capitalize
     playerOption(input)
   }
 
   def computerChoice(): Unit = {
     val r = scala.util.Random
     variables.computerInput = r.nextInt(3) + 1
+    calculateWinner()
   }
 
   def playerOption(input: String): Unit = {
-    val playerOption = getValueOfOption(input)
-    if(playerOption != 0){
-      variables.playerInput = playerOption
+    if (input.equals("Exit")) {
+      println("Goodbye!")
     }
     else {
-      println("Wrong input!")
-      playerChoice()
+      val playerOption = getValueOfOption(input)
+      if (playerOption != 0) {
+        variables.playerInput = playerOption
+        computerChoice()
+      }
+      else {
+        println("Wrong input!")
+        playerChoice()
+      }
     }
   }
 
@@ -42,51 +48,48 @@ case class GameLogic() {
     variables.optionOfValue.getOrElse(input, "")
   }
 
+  def playerWin(): Unit = {
+    println("You win :) Your choice: " +
+      getOptionOfValue(variables.playerInput) +
+      ", Computer: " +
+      getOptionOfValue(variables.computerInput))
+    variables.scorePlayer += 1
+  }
+
+  def computerWin(): Unit = {
+    println("You lose :( Your choice: " +
+      getOptionOfValue(variables.playerInput) +
+      ", Computer: " +
+      getOptionOfValue(variables.computerInput))
+    variables.scoreComputer += 1
+  }
+
   def calculateWinner(): Unit = {
-    if (variables.playerInput == variables.computerInput){
+    if (variables.playerInput == variables.computerInput) {
       println("Draw! You both chose " + getOptionOfValue(variables.playerInput))
     }
-    else if (variables.playerInput % 3 > variables.computerInput % 3){
-      println("You win :) Your choice: " +
-        getOptionOfValue(variables.playerInput) +
-        ", Computer: " +
-        getOptionOfValue(variables.computerInput))
-      variables.scorePlayer += 1
-    }
     else {
-      println("You lose :( Your choice: " +
-        getOptionOfValue(variables.playerInput) +
-        ", Computer: " +
-        getOptionOfValue(variables.computerInput))
-      variables.scoreComputer += 1
+      if (variables.playerInput == 1 && variables.computerInput == 3) {
+        playerWin()
+      }
+      else if (variables.playerInput == 3 && variables.computerInput == 1) {
+        computerWin()
+      }
+      else if (variables.playerInput > variables.computerInput) {
+        playerWin()
+      }
+      else {
+        computerWin()
+      }
     }
     scoreOverview()
   }
 
   def scoreOverview(): Unit = {
     println("\nScore:")
+    println("=========")
     println("You: " + variables.scorePlayer)
-    println("Computer: " + variables.scoreComputer)
-    endGame()
+    println("Computer: " + variables.scoreComputer + "\n")
+    playerChoice()
   }
-
-  def endOption(input: String) : Unit = {
-    if(input.equals("Restart")){
-      makeChoices()
-    }
-    else if (input.equals("Exit")){
-      println("Goodbye!")
-    }
-    else {
-      println("Wrong input!")
-      endGame()
-    }
-  }
-
-  def endGame(): Unit = {
-
-    val input = scala.io.StdIn.readLine("Type Restart to play again or type Exit to quit the game\n").capitalize
-    endOption(input)
-  }
-
 }
