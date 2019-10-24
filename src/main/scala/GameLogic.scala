@@ -6,12 +6,6 @@ case class GameLogic() {
     playerChoice()
   }
 
-  def makeChoices(): Unit = {
-    playerChoice()
-    computerChoice()
-    calculateWinner()
-  }
-
   def playerChoice(): Unit = {
     val input = scala.io.StdIn.readLine("Choose 'Rock', 'Paper' or 'Scissors. Type Exit to quit\n").capitalize
     playerOption(input)
